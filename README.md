@@ -400,7 +400,6 @@ REACT_APP_API_URL=http://localhost:5001/api
 PORT=3001
 ```
 
-## 💬 Support
 
 For issues, questions, or suggestions:
 - 
@@ -408,6 +407,3 @@ For issues, questions, or suggestions:
 
 ---
 
-**Built with ❤️ for Indian Farmers**
-
-*Empowering agricultural logistics through technology*
