@@ -403,8 +403,8 @@ PORT=3001
 ## 💬 Support
 
 For issues, questions, or suggestions:
-- Create an issue on GitHub
-- Contact: [your-email@example.com]
+- 
+- Contact: [mail: "gsumana2004@gmail.com"]
 
 ---
 
