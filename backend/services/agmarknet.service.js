@@ -104,7 +104,7 @@ async function getMandiPrices(crop, sourceLocation) {
     const useMockData = process.env.USE_MOCK_DATA === 'true' || !process.env.AGMARKNET_API_KEY;
 
     if (useMockData) {
-        console.log('Using mock data for Agmarknet (API key not configured)');
+        console.log('📦 Using mock data for Agmarknet (API key not configured)');
         return getMockMandiPrices(crop, sourceLocation);
     }
 
@@ -123,12 +123,12 @@ async function getMandiPrices(crop, sourceLocation) {
 
         // Transform API response to our format
         const mandis = transformAgmarknetResponse(response.data, crop);
-        console.log(`Fetched ${mandis.length} mandis from Agmarknet API`);
+        console.log(`✅ Fetched ${mandis.length} mandis from Agmarknet API`);
         return mandis;
 
     } catch (error) {
-        console.warn('Agmarknet API error:', error.message);
-        console.log('Falling back to mock data');
+        console.warn('⚠️  Agmarknet API error:', error.message);
+        console.log('📦 Falling back to mock data');
         return getMockMandiPrices(crop, sourceLocation);
     }
 }
@@ -139,7 +139,7 @@ async function getMandiPrices(crop, sourceLocation) {
 function getMockMandiPrices(crop, sourceLocation) {
     const cropLower = crop.toLowerCase();
 
-    return MOCK_MANDIS.map(mandi => {
+    const mockResults = MOCK_MANDIS.map(mandi => {
         const price = mandi.prices[cropLower] || 1000; // Default price if crop not found
 
         return {
@@ -157,6 +157,69 @@ function getMockMandiPrices(crop, sourceLocation) {
             source: 'mock',
         };
     });
+
+    // Add multiple dynamic "Local Mandis" near the user's location for demo purposes
+    if (sourceLocation && sourceLocation.lat && sourceLocation.lng) {
+
+        // 1. Very close, good price (The ideal choice)
+        const latOffset1 = (Math.random() * 0.1 + 0.05) * (Math.random() > 0.5 ? 1 : -1);
+        const lngOffset1 = (Math.random() * 0.1 + 0.05) * (Math.random() > 0.5 ? 1 : -1);
+
+        mockResults.unshift({
+            name: 'Local Market (Nearby)',
+            state: 'Your State',
+            district: 'Local District',
+            location: {
+                lat: sourceLocation.lat + latOffset1,
+                lng: sourceLocation.lng + lngOffset1,
+            },
+            price: 1250,
+            pricePerQuintal: 1250,
+            unit: 'Quintal',
+            updatedAt: new Date().toISOString(),
+            source: 'mock-local',
+        });
+
+        // 2. Slightly further, higher price (Good alternative)
+        const latOffset2 = (Math.random() * 0.2 + 0.15) * (Math.random() > 0.5 ? 1 : -1);
+        const lngOffset2 = (Math.random() * 0.2 + 0.15) * (Math.random() > 0.5 ? 1 : -1);
+
+        mockResults.unshift({
+            name: 'District Main Mandi',
+            state: 'Your State',
+            district: 'Local District',
+            location: {
+                lat: sourceLocation.lat + latOffset2,
+                lng: sourceLocation.lng + lngOffset2,
+            },
+            price: 1320, // Higher price
+            pricePerQuintal: 1320,
+            unit: 'Quintal',
+            updatedAt: new Date().toISOString(),
+            source: 'mock-local',
+        });
+
+        // 3. Further away, best price (High profit/high risk option)
+        const latOffset3 = (Math.random() * 0.4 + 0.3) * (Math.random() > 0.5 ? 1 : -1);
+        const lngOffset3 = (Math.random() * 0.4 + 0.3) * (Math.random() > 0.5 ? 1 : -1);
+
+        mockResults.unshift({
+            name: 'Regional Trading Center',
+            state: 'Your State',
+            district: 'Neighboring District',
+            location: {
+                lat: sourceLocation.lat + latOffset3,
+                lng: sourceLocation.lng + lngOffset3,
+            },
+            price: 1450, // Best price
+            pricePerQuintal: 1450,
+            unit: 'Quintal',
+            updatedAt: new Date().toISOString(),
+            source: 'mock-local',
+        });
+    }
+
+    return mockResults;
 }
 
 /**
